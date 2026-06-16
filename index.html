@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga Persahabatan 6 Penjuru (Live Score)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+        }
+        .tab-active {
+            border-bottom: 3px solid #10b981; /* Emerald 500 */
+            color: #10b981;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col pb-12">
+
+    <!-- Header / Banner Utama -->
+    <header class="bg-gradient-to-r from-emerald-800 to-slate-900 border-b border-emerald-500/20 py-6 px-4 shadow-xl">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <!-- Logo Kejohanan Dinamik -->
+                <div id="tournament-logo-container" class="flex-shrink-0">
+                    <!-- Dijana menggunakan Javascript -->
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-white">LIGA PERSAHABATAN 6 PENJURU</h1>
+                    <div class="flex flex-wrap items-center gap-2 mt-1">
+                        <p class="text-xs text-emerald-300 font-medium">
+                            <i class="fa-regular fa-calendar-days mr-1"></i> Tarikh: 17 Jun 2026 (Hari Rabu)
+                        </p>
+                        <span id="sync-status-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-slate-800 text-slate-300">
+                            Menghubung...
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-800/80 backdrop-blur border border-slate-700/50 px-4 py-2 rounded-xl text-center md:text-right">
+                <span class="text-xs text-slate-400 block uppercase tracking-wider font-semibold">Sistem Pengadil</span>
+                <span class="text-sm text-emerald-400 font-bold">Pasukan Rehat Menjadi Pengadil</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigasi / Butang Tab -->
+    <nav class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-around">
+            <button onclick="switchTab('tab-perlawanan')" id="btn-tab-perlawanan" class="tab-btn py-4 px-2 text-sm font-semibold flex items-center gap-2 transition duration-200 tab-active">
+                <i class="fa-solid fa-calendar-alt"></i> <span>Perlawanan</span>
+            </button>
+            <button onclick="switchTab('tab-keputusan')" id="btn-tab-keputusan" class="tab-btn py-4 px-2 text-sm font-semibold flex items-center gap-2 transition duration-200 text-slate-400 hover:text-slate-200">
+                <i class="fa-solid fa-square-poll-vertical"></i> <span>Keputusan</span>
+            </button>
+            <button onclick="switchTab('tab-standing')" id="btn-tab-standing" class="tab-btn py-4 px-2 text-sm font-semibold flex items-center gap-2 transition duration-200 text-slate-400 hover:text-slate-200">
+                <i class="fa-solid fa-ranking-star"></i> <span>Standing</span>
+            </button>
+            <button onclick="switchTab('tab-admin')" id="btn-tab-admin" class="tab-btn py-4 px-2 text-sm font-semibold flex items-center gap-2 transition duration-200 text-slate-400 hover:text-slate-200">
+                <i class="fa-solid fa-lock"></i> <span>Admin Panel</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Wadah Konten Utama -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6">
+
+        <!-- NOTIFICATION TOAST -->
+        <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-emerald-500 text-slate-950 font-bold px-6 py-3 rounded-xl shadow-2xl flex items-center gap-2">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="toast-message">Mesej berjaya!</span>
+        </div>
+
+        <!-- TAB 1: PERLAWANAN (JADUAL) -->
+        <section id="tab-perlawanan" class="tab-content block space-y-4">
+            <div class="flex items-center justify-between pb-2">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+                    Jadual Perlawanan Hari Ini
+                </h2>
+                <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700 font-medium">
+                    12 Perlawanan Keseluruhan
+                </span>
+            </div>
+
+            <!-- Daftar Perlawanan -->
+            <div id="matches-list-container" class="grid gap-4 md:grid-cols-2">
+                <!-- Dijana menggunakan Javascript -->
+            </div>
+        </section>
+
+        <!-- TAB 2: KEPUTUSAN -->
+        <section id="tab-keputusan" class="tab-content hidden space-y-4">
+            <div class="flex items-center justify-between pb-2">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+                    Keputusan Rasmi Perlawanan
+                </h2>
+                <div class="text-xs bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full border border-emerald-800 font-semibold" id="stats-played-count">
+                    0/12 Selesai
+                </div>
+            </div>
+
+            <!-- Senarai Keputusan Selesai -->
+            <div id="results-list-container" class="grid gap-4 md:grid-cols-2">
+                <!-- Dijana menggunakan Javascript -->
+            </div>
+
+            <!-- Tampilan mesej jika belum ada pertandingan yang selesai -->
+            <div id="no-results-view" class="text-center py-12 bg-slate-800/40 rounded-2xl border border-slate-800 hidden">
+                <i class="fa-solid fa-futbol text-4xl text-slate-600 mb-3 animate-spin"></i>
+                <p class="text-slate-400 font-medium">Tiada perlawanan yang mempunyai keputusan lagi.</p>
+                <p class="text-xs text-slate-500 mt-1">Sila masukkan keputusan di tab Admin!</p>
+            </div>
+        </section>
+
+        <!-- TAB 3: STANDING (LIVE KEDUDUKAN) -->
+        <section id="tab-standing" class="tab-content hidden space-y-4">
+            <div class="flex items-center justify-between pb-2">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+                    Carta Kedudukan Pasukan
+                </h2>
+                <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700 font-medium">
+                    Live Updates
+                </span>
+            </div>
+
+            <!-- Table Container (Responsive) -->
+            <div class="overflow-x-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-xl">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-800/80 text-slate-300 text-xs font-bold uppercase tracking-wider border-b border-slate-700/50">
+                            <th class="py-4 px-4 text-center w-12">Pos</th>
+                            <th class="py-4 px-4">Pasukan</th>
+                            <th class="py-4 px-3 text-center">P</th>
+                            <th class="py-4 px-2 text-center text-emerald-400">M</th>
+                            <th class="py-4 px-2 text-center text-amber-400">S</th>
+                            <th class="py-4 px-2 text-center text-rose-400">K</th>
+                            <th class="py-4 px-2 text-center hidden sm:table-cell">JG</th>
+                            <th class="py-4 px-2 text-center hidden sm:table-cell">GB</th>
+                            <th class="py-4 px-3 text-center font-semibold">PG</th>
+                            <th class="py-4 px-4 text-center font-bold bg-slate-800 text-emerald-400 rounded-tr-2xl">Mata</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standing-tbody" class="divide-y divide-slate-800 text-sm">
+                        <!-- Dijana menggunakan Javascript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Petunjuk Format Pengiraan -->
+            <div class="bg-slate-850 border border-slate-800/80 p-4 rounded-xl text-xs text-slate-400 space-y-1">
+                <p class="font-semibold text-slate-300">Format Pengiraan Mata & Susunan Carta:</p>
+                <p>• Menang = 3 Mata | Seri = 1 Mata | Kalah = 0 Mata</p>
+                <p>• Kedudukan disusun mengikut: Mata tertinggi ➔ Perbezaan Gol (PG) ➔ Jaringan Gol (JG) ➔ Nama Pasukan.</p>
+                <p>• Singkatan: <strong>P</strong> (Main), <strong>M</strong> (Menang), <strong>S</strong> (Seri), <strong>K</strong> (Kalah), <strong>JG</strong> (Jaringan Gol), <strong>GB</strong> (Gol Bolos), <strong>PG</strong> (Perbezaan Gol).</p>
+            </div>
+        </section>
+
+        <!-- TAB 4: ADMIN PANEL -->
+        <section id="tab-admin" class="tab-content hidden space-y-8">
+            
+            <!-- SUB-TAB 4A: SETUP KATA LALUAN BARU (Pertama Kali) -->
+            <div id="admin-setup-card" class="max-w-md mx-auto bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl space-y-6 hidden">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-key text-2xl animate-bounce"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-white">Cipta Kata Laluan Admin</h3>
+                    <p class="text-xs text-slate-400 mt-2">Ini adalah kali pertama anda mengakses panel Admin. Sila tetapkan kata laluan untuk mengunci panel ini pada masa akan datang.</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Kata Laluan Baru</label>
+                        <input type="password" id="setup-password-input" placeholder="Masukkan kata laluan" class="w-full bg-slate-850 border border-slate-700/60 rounded-xl py-3 px-4 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Sahkan Kata Laluan</label>
+                        <input type="password" id="setup-password-confirm" placeholder="Masukkan semula kata laluan" class="w-full bg-slate-850 border border-slate-700/60 rounded-xl py-3 px-4 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <button onclick="handleSetupPassword()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-xl transition shadow-lg shadow-emerald-500/15 text-sm">
+                        Tetapkan & Masuk Panel
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 4B: LOG MASUK ADMIN -->
+            <div id="admin-login-card" class="max-w-md mx-auto bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl space-y-6 hidden">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-lock text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-white">Log Masuk Admin</h3>
+                    <p class="text-xs text-slate-400 mt-2">Sila masukkan kata laluan keselamatan untuk mengakses tetapan kejohanan.</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Kata Laluan</label>
+                        <input type="password" id="login-password-input" placeholder="Masukkan kata laluan anda" class="w-full bg-slate-850 border border-slate-700/60 rounded-xl py-3 px-4 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 transition" onkeydown="if(event.key === 'Enter') handleLoginPassword()">
+                    </div>
+                    <button onclick="handleLoginPassword()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-xl transition shadow-lg shadow-emerald-500/15 text-sm">
+                        Log Masuk <i class="fa-solid fa-right-to-bracket ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 4C: KANDUNGAN UTAMA PANEL ADMIN (Hanya terpapar selepas Log Masuk) -->
+            <div id="admin-main-content" class="space-y-8 hidden">
+                
+                <!-- Bar Tindakan Admin Atas (Log Keluar) -->
+                <div class="flex items-center justify-between bg-slate-900/60 border border-slate-800 p-4 rounded-2xl">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-xs font-bold text-slate-300">Mod Admin Aktif</span>
+                    </div>
+                    <button onclick="handleAdminLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl transition border border-slate-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-right-from-bracket"></i> Log Keluar
+                    </button>
+                </div>
+
+                <!-- CARA SETUP LIVE SCORE (HANYA MUNCUL DI GITHUB PAGES JIKA BELUM SET) -->
+                <div id="firebase-instructions-card" class="bg-slate-900/90 border-2 border-dashed border-emerald-500/30 p-6 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-emerald-500/10 text-emerald-400 p-2.5 rounded-xl">
+                            <i class="fa-solid fa-tower-broadcast text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-white">Panduan Mengaktifkan Sistem Live Score (Awan)</h4>
+                            <p class="text-xs text-slate-400">Ikuti langkah ini jika anda ingin berkongsi keputusan perlawanan secara nyata/live dengan pengguna lain di GitHub Pages.</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-300 space-y-2 pl-2 border-l-2 border-emerald-500/20">
+                        <p>1. Layari <a href="https://console.firebase.google.com/" target="_blank" class="text-emerald-400 underline font-semibold">Firebase Console</a> dan cipta projek percuma baharu.</p>
+                        <p>2. Cipta **Web App** dalam projek tersebut dan salin blok kod `firebaseConfig` anda.</p>
+                        <p>3. Di menu sebelah kiri, pergi to **Firestore Database**, klik **Create Database** (pilih mod pengujian/test mode).</p>
+                        <p>4. Buka kod fail HTML ini, cari baris **`GITHUB_FIREBASE_CONFIG`** (baris 520+) di bahagian bawah, gantikan dengan config anda, dan muat naik semula ke GitHub!</p>
+                    </div>
+                </div>
+
+                <!-- Bahagian 0: Pengaturan Logo Utama Kejohanan -->
+                <div class="bg-slate-850 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                            <i class="fa-solid fa-gears"></i> Pengaturan Logo Kejohanan
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Masukkan pautan terus imej untuk logo utama kejohanan (trofi hijau asal akan digantikan).</p>
+                    </div>
+                    <div class="grid gap-4 md:grid-cols-12 items-end">
+                        <div class="md:col-span-9">
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Direct Link Logo Kejohanan (URL)</label>
+                            <input type="text" id="input-tournament-logo" placeholder="https://contoh.com/logo-kejohanan.png" class="w-full bg-slate-900 border border-slate-700/60 rounded-xl py-2.5 px-3 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <div class="md:col-span-3">
+                            <button onclick="updateTournamentLogo()" class="w-full text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3.5 rounded-xl font-black transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10">
+                                <i class="fa-solid fa-floppy-disk"></i> Simpan Logo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bahagian 1: Kemaskini Skor Perlawanan -->
+                <div class="bg-slate-850 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square"></i> Kemaskini Skor & Keputusan
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">Masukkan skor jaringan pasukan di bawah (Kemaskini akan terus dihantar secara automatik ke peranti penonton).</p>
+                        </div>
+                        <button onclick="openResetConfirmation()" class="text-xs bg-rose-950/40 text-rose-400 hover:bg-rose-900/50 border border-rose-800/50 px-4 py-2 rounded-xl transition flex items-center gap-1.5 self-start sm:self-auto font-semibold">
+                            <i class="fa-solid fa-rotate-right"></i> Reset Semua Skor
+                        </button>
+                    </div>
+
+                    <!-- Live Match Editing List -->
+                    <div id="admin-matches-list" class="space-y-4">
+                        <!-- Dijana menggunakan Javascript -->
+                    </div>
+                </div>
+
+                <!-- Bahagian 2: Pengurusan Pasukan & Logo -->
+                <div class="bg-slate-850 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved"></i> Pengurusan Pasukan & Logo
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Kemaskini nama pasukan atau letakkan pautan terus logo (direct URL image).</p>
+                    </div>
+
+                    <!-- Teams Edit Grid -->
+                    <div id="admin-teams-list" class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+                        <!-- Dijana menggunakan Javascript -->
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-circle-info text-emerald-400 mt-0.5"></i>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <p class="font-semibold text-slate-300">Nota mengenai Logo Pasukan & Kejohanan:</p>
+                            <p>Sila gunakan pautan gambar terus (Contoh: akhiran png, jpg, svg) yang boleh diakses dari internet. Jika dibiarkan kosong, sistem akan menjana lencana default (badge) dengan singkatan huruf pasukan.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold text-white">Adakah Anda Pasti?</h4>
+                <p class="text-xs text-slate-400 mt-1">Tindakan ini akan memadam semua skor perlawanan yang telah anda isi dan menetapkannya semula ke kosong.</p>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeResetConfirmation()" class="flex-1 py-2.5 px-4 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-xl font-medium text-xs transition">
+                    Batal
+                </button>
+                <button onclick="resetScores()" class="flex-1 py-2.5 px-4 bg-rose-600 text-white hover:bg-rose-700 rounded-xl font-semibold text-xs transition">
+                    Ya, Reset Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 space-y-1">
+            <p>© 2026 Liga Persahabatan 6 Penjuru. Hak Cipta Terpelihara.</p>
+            <p>Dibangunkan dengan teknologi Google Firebase Firestore Realtime.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK (ESM Module) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ID Unik Aplikasi untuk localStorage / Firestore
+        const STORAGE_KEY_TEAMS = "liga_6p_teams_v1";
+        const STORAGE_KEY_MATCHES = "liga_6p_matches_v1";
+        const STORAGE_KEY_TOURNEY_LOGO = "liga_6p_tourney_logo_v1";
+        const STORAGE_KEY_ADMIN_PASS = "liga_6p_admin_password_v1";
+
+        // =========================================================================
+        // 🔴 PENGATURAN FIREBASE (UNTUK LIVE SCORE DI GITHUB PAGES)
+        // =========================================================================
+        // Gantikan nilai objek di bawah ini dengan konfigurasi Firebase anda sendiri
+        // supaya Live Score berfungsi untuk semua orang di internet!
+        const GITHUB_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBwWjRNnfxKQMtz8PM99S5BmLLjlcMwG4s",
+            authDomain: "liga-6-penjuru.firebaseapp.com",
+            projectId: "liga-6-penjuru",
+            storageBucket: "liga-6-penjuru.firebasestorage.app",
+            messagingSenderId: "77202724350",
+            appId: "1:77202724350:web:622f092bd0ff5bdd125caf"
+        };
+        // =========================================================================
+
+        // Senarai awal 6 Pasukan unik
+        const defaultTeams = [
+            { id: "seri-selangor", name: "SK Seri Selangor", logo: "" },
+            { id: "seafield", name: "SK Seafield", logo: "" },
+            { id: "seafield-3", name: "SK Seafield 3", logo: "" },
+            { id: "bandar-sunway", name: "SK Bandar Sunway", logo: "" },
+            { id: "sri-subang-jaya", name: "SK Sri Subang Jaya", logo: "" },
+            { id: "subang-jaya", name: "SK Subang Jaya", logo: "" }
+        ];
+
+        // Senarai jadual 12 Perlawanan RASMI TERBAHARU yang diberikan oleh pengguna
+        const defaultMatches = [
+            { id: 1, time: "08:00 AM", teamAId: "subang-jaya", teamBId: "seri-selangor", refId: "seafield-3", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 2, time: "08:15 AM", teamAId: "seafield", teamBId: "bandar-sunway", refId: "sri-subang-jaya", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 3, time: "08:30 AM", teamAId: "seafield-3", teamBId: "sri-subang-jaya", refId: "subang-jaya", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 4, time: "08:45 AM", teamAId: "subang-jaya", teamBId: "bandar-sunway", refId: "seri-selangor", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 5, time: "09:00 AM", teamAId: "seafield", teamBId: "seri-selangor", refId: "seafield-3", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 6, time: "09:15 AM", teamAId: "seafield-3", teamBId: "bandar-sunway", refId: "seafield", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 7, time: "09:30 AM", teamAId: "subang-jaya", teamBId: "sri-subang-jaya", refId: "bandar-sunway", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 8, time: "09:45 AM", teamAId: "seafield", teamBId: "seafield-3", refId: "seri-selangor", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 9, time: "10:00 AM", teamAId: "seri-selangor", teamBId: "bandar-sunway", refId: "sri-subang-jaya", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 10, time: "10:15 AM", teamAId: "seafield", teamBId: "sri-subang-jaya", refId: "subang-jaya", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 11, time: "10:30 AM", teamAId: "subang-jaya", teamBId: "seafield-3", refId: "bandar-sunway", scoreA: null, scoreB: null, isPlayed: false },
+            { id: 12, time: "10:45 AM", teamAId: "seri-selangor", teamBId: "sri-subang-jaya", refId: "seafield", scoreA: null, scoreB: null, isPlayed: false }
+        ];
+
+        let teams = [];
+        let matches = [];
+        let tournamentLogo = "";
+        
+        // Status Pengesahan Memori (Hilang jika reload pelayar)
+        let isAdminAuthenticated = false;
+
+        // Firebase State Variables
+        let db = null;
+        let auth = null;
+        let isFirebaseActive = false;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // 1. Tentukan Sama Ada Untuk Firebase Atau Local Storage
+        async function setupSyncEngine() {
+            let configToUse = null;
+
+            // Semak jika persekitaran platform menyediakan config
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                try {
+                    configToUse = JSON.parse(__firebase_config);
+                } catch (e) {
+                    configToUse = null;
+                }
+            } 
+            // Cuba guna config GITHUB_FIREBASE_CONFIG dari kod yang dimasukkan pengguna
+            else if (GITHUB_FIREBASE_CONFIG && GITHUB_FIREBASE_CONFIG.apiKey) {
+                configToUse = GITHUB_FIREBASE_CONFIG;
+            }
+
+            const badge = document.getElementById('sync-status-badge');
+
+            if (configToUse && configToUse.apiKey) {
+                try {
+                    // Mulakan Firebase
+                    const app = initializeApp(configToUse);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    // Jalankan Pengesahan
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    isFirebaseActive = true;
+                    badge.innerText = "🔴 Live Sync";
+                    badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-emerald-500 text-slate-950";
+                    
+                    // Sorokkan kad instruksi Firebase memandangkan ia sudah berfungsi!
+                    const instCard = document.getElementById('firebase-instructions-card');
+                    if (instCard) instCard.classList.add('hidden');
+
+                    // Mulakan penyegerakan live-data
+                    startFirestoreRealtimeSync();
+
+                } catch (error) {
+                    console.error("Gagal menghubung ke Firebase: ", error);
+                    fallbackToLocalStorage("Ralat Server");
+                }
+            } else {
+                fallbackToLocalStorage("Mode Offline");
+            }
+        }
+
+        // Jika tiada internet / Firebase, guna localstorage biasa
+        function fallbackToLocalStorage(reason) {
+            isFirebaseActive = false;
+            const badge = document.getElementById('sync-status-badge');
+            badge.innerText = `⚠️ ${reason}`;
+            badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-amber-500 text-slate-950";
+            
+            // Tunjukkan instruksi di admin panel supaya pengguna tahu macam mana nak aktifkan live score di GitHub Pages
+            const instCard = document.getElementById('firebase-instructions-card');
+            if (instCard) instCard.classList.remove('hidden');
+
+            initLocalData();
+            renderAll();
+        }
+
+        // Penyegerakan Real-Time Firestore
+        function startFirestoreRealtimeSync() {
+            if (!isFirebaseActive || !auth.currentUser) return;
+
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'state', 'main');
+
+            onSnapshot(docRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.data();
+                    if (data.teams) teams = data.teams;
+                    if (data.matches) matches = data.matches;
+                    if (data.tournamentLogo !== undefined) tournamentLogo = data.tournamentLogo;
+                    
+                    // 🔒 Baris password telah dibuang demi keselamatan
+                    
+                    renderAll();
+                } else {
+                    // Jika data kosong di Firebase baru, isytihar data tempatan asal ke awan
+                    initLocalData();
+                    pushStateToCloud();
+                }
+            }, (error) => {
+                console.error("Gagal menyegerakkan Firestore: ", error);
+                fallbackToLocalStorage("Ralat Firestore");
+            });
+        }
+
+        // Hantar perubahan state ke Firebase Cloud
+        async function pushStateToCloud() {
+            if (!isFirebaseActive) return;
+            if (!auth.currentUser) return;
+
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'state', 'main');
+
+                // 🔒 Hanya hantar data perlawanan, jangan hantar password ke awan
+                await setDoc(docRef, {
+                    teams,
+                    matches,
+                    tournamentLogo
+                });
+            } catch (e) {
+                console.error("Gagal menghantar data ke awan: ", e);
+                showToast("Sistem Live gagal menyegerakkan data!");
+            }
+        }
+
+        // Inisialisasi Data Setempat (Local)
+        function initLocalData() {
+            const storedTeams = localStorage.getItem(STORAGE_KEY_TEAMS);
+            const storedMatches = localStorage.getItem(STORAGE_KEY_MATCHES);
+            const storedLogo = localStorage.getItem(STORAGE_KEY_TOURNEY_LOGO);
+
+            if (storedTeams) {
+                teams = JSON.parse(storedTeams);
+            } else {
+                teams = JSON.parse(JSON.stringify(defaultTeams));
+                localStorage.setItem(STORAGE_KEY_TEAMS, JSON.stringify(teams));
+            }
+
+            if (storedMatches) {
+                matches = JSON.parse(storedMatches);
+            } else {
+                matches = JSON.parse(JSON.stringify(defaultMatches));
+                localStorage.setItem(STORAGE_KEY_MATCHES, JSON.stringify(matches));
+            }
+
+            if (storedLogo !== null) {
+                tournamentLogo = storedLogo;
+            } else {
+                tournamentLogo = "";
+            }
+        }
+
+        // Simpan perolehan data terkini ke Cloud atau Local
+        function saveData() {
+            if (isFirebaseActive) {
+                pushStateToCloud();
+            } else {
+                localStorage.setItem(STORAGE_KEY_TEAMS, JSON.stringify(teams));
+                localStorage.setItem(STORAGE_KEY_MATCHES, JSON.stringify(matches));
+                renderAll();
+            }
+        }
+
+        // Papar atau kemaskini Logo Kejohanan pada Header
+        function renderTournamentLogo() {
+            const container = document.getElementById('tournament-logo-container');
+            if (tournamentLogo && tournamentLogo.trim() !== "") {
+                container.innerHTML = `
+                    <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl overflow-hidden border border-emerald-500/30 bg-slate-800 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <img src="${tournamentLogo}" alt="Logo Kejohanan" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'w-full h-full bg-emerald-500 text-slate-950 flex items-center justify-center p-3 font-bold\'><i class=\'fa-solid fa-trophy text-2xl\'></i></div>';">
+                    </div>
+                `;
+            } else {
+                // Gunakan trofi asal sekiranya logo kosong
+                container.innerHTML = `
+                    <div class="bg-emerald-500 text-slate-900 p-3 rounded-2xl shadow-lg shadow-emerald-500/30 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center">
+                        <i class="fa-solid fa-trophy text-2xl"></i>
+                    </div>
+                `;
+            }
+        }
+
+        // Dapatkan nama pasukan mengikut ID
+        function getTeam(id) {
+            return teams.find(t => t.id === id) || { id: id, name: id, logo: "" };
+        }
+
+        // Jana singkatan nama untuk lencana pasukan jika tiada logo (contoh: SK Seri Selangor -> SSS)
+        function getInitials(name) {
+            if (!name) return "?";
+            const words = name.replace("SK ", "").split(" ");
+            return words.map(w => w[0]).join("").substring(0, 3).toUpperCase();
+        }
+
+        // Fungsi melukis imej lencana pasukan (logo / fallback SVG)
+        function generateTeamBadge(team, sizeClass = "w-10 h-10") {
+            if (team.logo && team.logo.trim() !== "") {
+                return `
+                    <div class="${sizeClass} rounded-full overflow-hidden border border-slate-700 bg-slate-800 flex items-center justify-center flex-shrink-0">
+                        <img src="${team.logo}" alt="Logo ${team.name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'w-full h-full bg-emerald-700 flex items-center justify-center text-xs font-bold text-white\'>${getInitials(team.name)}</div>';">
+                    </div>
+                `;
+            } else {
+                // Sketsa lencana geometri sekiranya tiada logo
+                return `
+                    <div class="${sizeClass} rounded-full bg-gradient-to-tr from-slate-800 to-emerald-950 border border-emerald-500/30 flex items-center justify-center shadow-inner flex-shrink-0">
+                        <span class="text-xs font-bold tracking-wider text-emerald-400">${getInitials(team.name)}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Mengawal Tab navigasi
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('text-slate-400', 'hover:text-slate-200');
+            });
+
+            document.getElementById(`btn-${tabId}`).classList.add('tab-active');
+            document.getElementById(`btn-${tabId}`).classList.remove('text-slate-400', 'hover:text-slate-200');
+
+            // Sekiranya tab admin dibuka, semak status kelayakan
+            if (tabId === 'tab-admin') {
+                checkAdminAccess();
+            }
+        }
+
+        // Kawalan Akses Kata Laluan Admin
+        function checkAdminAccess() {
+            const savedPassword = localStorage.getItem(STORAGE_KEY_ADMIN_PASS);
+            const setupCard = document.getElementById('admin-setup-card');
+            const loginCard = document.getElementById('admin-login-card');
+            const mainContent = document.getElementById('admin-main-content');
+
+            // Sorok kesemua kad terlebih dahulu
+            setupCard.classList.add('hidden');
+            loginCard.classList.add('hidden');
+            mainContent.classList.add('hidden');
+
+            if (!savedPassword) {
+                // Tiada kata laluan disimpan -> Papar borang setup
+                setupCard.classList.remove('hidden');
+            } else if (!isAdminAuthenticated) {
+                // Ada kata laluan tetapi belum dilog masuk -> Papar borang login
+                loginCard.classList.remove('hidden');
+                document.getElementById('login-password-input').focus();
+            } else {
+                // Sudah disahkan -> Papar kandungan panel admin utama
+                mainContent.classList.remove('hidden');
+                // Auto-fill input logo kejohanan
+                document.getElementById('input-tournament-logo').value = tournamentLogo;
+            }
+        }
+
+        // Selesaikan Setup Kata Laluan Baru
+        window.handleSetupPassword = function() {
+            const passVal = document.getElementById('setup-password-input').value;
+            const confirmVal = document.getElementById('setup-password-confirm').value;
+
+            if (passVal.trim() === "") {
+                showToast("Kata laluan tidak boleh dibiarkan kosong!");
+                return;
+            }
+
+            if (passVal !== confirmVal) {
+                showToast("Sila pastikan kedua-dua kata laluan adalah sepadan!");
+                return;
+            }
+
+            // Simpan ke localStorage
+            localStorage.setItem(STORAGE_KEY_ADMIN_PASS, passVal);
+            isAdminAuthenticated = true;
+            
+            showToast("Kata laluan berjaya ditetapkan!");
+            
+            // Bersihkan input
+            document.getElementById('setup-password-input').value = "";
+            document.getElementById('setup-password-confirm').value = "";
+            
+            // Segerakkan kata laluan ke awan (jika Firebase aktif)
+            if (isFirebaseActive) {
+                pushStateToCloud();
+            }
+            
+            checkAdminAccess();
+        }
+
+        // Selesaikan Log Masuk Admin
+        window.handleLoginPassword = function() {
+            const enteredPass = document.getElementById('login-password-input').value;
+            const savedPass = localStorage.getItem(STORAGE_KEY_ADMIN_PASS);
+
+            if (enteredPass === savedPass) {
+                isAdminAuthenticated = true;
+                showToast("Selamat Datang, Admin!");
+                document.getElementById('login-password-input').value = "";
+                checkAdminAccess();
+            } else {
+                showToast("Kata laluan salah! Sila cuba lagi.");
+                document.getElementById('login-password-input').select();
+            }
+        }
+
+        // Log keluar admin
+        window.handleAdminLogout = function() {
+            isAdminAuthenticated = false;
+            showToast("Anda telah berjaya log keluar dari mod Admin.");
+            checkAdminAccess();
+        }
+
+        // Memaparkan Mesej Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // RENDER TAB 1: PERLAWANAN
+        function renderMatches() {
+            const container = document.getElementById('matches-list-container');
+            container.innerHTML = '';
+
+            matches.forEach(m => {
+                const teamA = getTeam(m.teamAId);
+                const teamB = getTeam(m.teamBId);
+                const ref = getTeam(m.refId);
+
+                const isPlayed = m.isPlayed;
+                const scoreDisplay = isPlayed 
+                    ? `<span class="bg-emerald-500 text-slate-950 font-extrabold px-3 py-1 text-sm md:text-base rounded-lg min-w-[2.5rem] text-center">${m.scoreA}</span>
+                       <span class="text-slate-500 font-bold">-</span>
+                       <span class="bg-emerald-500 text-slate-950 font-extrabold px-3 py-1 text-sm md:text-base rounded-lg min-w-[2.5rem] text-center">${m.scoreB}</span>`
+                    : `<span class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 py-1.5 bg-slate-800 rounded-lg border border-slate-700">VS</span>`;
+
+                const matchCard = document.createElement('div');
+                matchCard.className = `p-4 rounded-2xl border transition duration-200 flex flex-col justify-between ${
+                    isPlayed ? 'bg-slate-850 border-emerald-500/10' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                }`;
+
+                matchCard.innerHTML = `
+                    <div class="flex justify-between items-center text-xs border-b border-slate-800/60 pb-2 mb-3">
+                        <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                            <i class="fa-regular fa-star"></i> Game #${m.id}
+                        </span>
+                        <span class="bg-slate-850 px-2.5 py-1 rounded-md text-slate-300 font-medium border border-slate-700/40">
+                            <i class="fa-regular fa-clock mr-1 text-emerald-500"></i> ${m.time}
+                        </span>
+                    </div>
+
+                    <!-- Arena Pertandingan Pasukan -->
+                    <div class="flex items-center justify-between gap-2 py-2">
+                        <!-- Pasukan A -->
+                        <div class="flex flex-col items-center flex-1 text-center">
+                            ${generateTeamBadge(teamA, 'w-12 h-12')}
+                            <span class="text-xs font-semibold text-slate-200 mt-2 line-clamp-1 max-w-[120px]">${teamA.name}</span>
+                        </div>
+
+                        <!-- Paparan Skor -->
+                        <div class="flex items-center gap-2">
+                            ${scoreDisplay}
+                        </div>
+
+                        <!-- Pasukan B -->
+                        <div class="flex flex-col items-center flex-1 text-center">
+                            ${generateTeamBadge(teamB, 'w-12 h-12')}
+                            <span class="text-xs font-semibold text-slate-200 mt-2 line-clamp-1 max-w-[120px]">${teamB.name}</span>
+                        </div>
+                    </div>
+
+                    <!-- Seksyen Pengadil -->
+                    <div class="mt-4 pt-2 border-t border-slate-850 flex items-center justify-between text-xs">
+                        <span class="text-slate-400"><i class="fa-solid fa-person-military-pointing text-amber-500 mr-1"></i> Pengadil:</span>
+                        <span class="font-medium text-amber-400">${ref.name}</span>
+                    </div>
+                `;
+                container.appendChild(matchCard);
+            });
+        }
+
+        // RENDER TAB 2: KEPUTUSAN
+        function renderResults() {
+            const container = document.getElementById('results-list-container');
+            const noResultsView = document.getElementById('no-results-view');
+            const playedCountBadge = document.getElementById('stats-played-count');
+            
+            container.innerHTML = '';
+            const playedMatches = matches.filter(m => m.isPlayed);
+            
+            playedCountBadge.innerText = `${playedMatches.length}/12 Selesai`;
+
+            if (playedMatches.length === 0) {
+                noResultsView.classList.remove('hidden');
+                container.classList.add('hidden');
+                return;
+            }
+
+            noResultsView.classList.add('hidden');
+            container.classList.remove('hidden');
+
+            playedMatches.forEach(m => {
+                const teamA = getTeam(m.teamAId);
+                const teamB = getTeam(m.teamBId);
+
+                let winnerBadgeA = '';
+                let winnerBadgeB = '';
+                let cardBorderColor = 'border-slate-800';
+
+                if (m.scoreA > m.scoreB) {
+                    winnerBadgeA = '<span class="text-[10px] uppercase font-extrabold tracking-wider bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20 mt-1">Menang</span>';
+                    cardBorderColor = 'border-emerald-500/20 shadow-lg shadow-emerald-950/20';
+                } else if (m.scoreB > m.scoreA) {
+                    winnerBadgeB = '<span class="text-[10px] uppercase font-extrabold tracking-wider bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20 mt-1">Menang</span>';
+                    cardBorderColor = 'border-emerald-500/20 shadow-lg shadow-emerald-950/20';
+                } else {
+                    winnerBadgeA = winnerBadgeB = '<span class="text-[10px] uppercase font-extrabold tracking-wider bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/20 mt-1">Seri</span>';
+                }
+
+                const resultCard = document.createElement('div');
+                resultCard.className = `p-4 rounded-2xl bg-slate-900 border ${cardBorderColor} transition duration-200`;
+                resultCard.innerHTML = `
+                    <div class="flex justify-between items-center text-xs border-b border-slate-800/60 pb-2 mb-3">
+                        <span class="font-bold text-emerald-400">Game #${m.id}</span>
+                        <span class="text-slate-400">Tamat Perlawanan</span>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <!-- Pasukan A -->
+                        <div class="flex flex-col items-center flex-1 text-center min-w-0">
+                            ${generateTeamBadge(teamA, 'w-10 h-10')}
+                            <span class="text-xs font-semibold text-slate-200 mt-2 truncate w-full px-1">${teamA.name}</span>
+                            ${winnerBadgeA}
+                        </div>
+
+                        <!-- Kotak Skor -->
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <div class="w-10 h-10 bg-slate-850 flex items-center justify-center text-lg md:text-xl font-black text-emerald-400 rounded-xl border border-slate-700/60">
+                                ${m.scoreA}
+                            </div>
+                            <span class="text-slate-600 font-bold">:</span>
+                            <div class="w-10 h-10 bg-slate-850 flex items-center justify-center text-lg md:text-xl font-black text-emerald-400 rounded-xl border border-slate-700/60">
+                                ${m.scoreB}
+                            </div>
+                        </div>
+
+                        <!-- Pasukan B -->
+                        <div class="flex flex-col items-center flex-1 text-center min-w-0">
+                            ${generateTeamBadge(teamB, 'w-10 h-10')}
+                            <span class="text-xs font-semibold text-slate-200 mt-2 truncate w-full px-1">${teamB.name}</span>
+                            ${winnerBadgeB}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(resultCard);
+            });
+        }
+
+        // RENDER TAB 3: STANDING (LIVE KEDUDUKAN)
+        function renderStandings() {
+            const tbody = document.getElementById('standing-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            const standingsMap = {};
+            teams.forEach(t => {
+                standingsMap[t.id] = {
+                    team: t,
+                    played: 0,
+                    won: 0,
+                    drawn: 0,
+                    lost: 0,
+                    goalsFor: 0,
+                    goalsAgainst: 0,
+                    goalDifference: 0,
+                    points: 0
+                };
+            });
+
+            matches.forEach(m => {
+                if (m.isPlayed) {
+                    const statsA = standingsMap[m.teamAId];
+                    const statsB = standingsMap[m.teamBId];
+
+                    if (statsA && statsB) {
+                        statsA.played += 1;
+                        statsB.played += 1;
+                        statsA.goalsFor += m.scoreA;
+                        statsA.goalsAgainst += m.scoreB;
+                        statsB.goalsFor += m.scoreB;
+                        statsB.goalsAgainst += m.scoreA;
+
+                        if (m.scoreA > m.scoreB) {
+                            statsA.won += 1;
+                            statsA.points += 3;
+                            statsB.lost += 1;
+                        } else if (m.scoreB > m.scoreA) {
+                            statsB.won += 1;
+                            statsB.points += 3;
+                            statsA.lost += 1;
+                        } else {
+                            statsA.drawn += 1;
+                            statsA.points += 1;
+                            statsB.drawn += 1;
+                            statsB.points += 1;
+                        }
+
+                        statsA.goalDifference = statsA.goalsFor - statsA.goalsAgainst;
+                        statsB.goalDifference = statsB.goalsFor - statsB.goalsAgainst;
+                    }
+                }
+            });
+
+            const sortedStandings = Object.values(standingsMap).sort((a, b) => {
+                if (b.points !== a.points) {
+                    return b.points - a.points;
+                }
+                if (b.goalDifference !== a.goalDifference) {
+                    return b.goalDifference - a.goalDifference;
+                }
+                if (b.goalsFor !== a.goalsFor) {
+                    return b.goalsFor - a.goalsFor;
+                }
+                return a.team.name.localeCompare(b.team.name);
+            });
+
+            sortedStandings.forEach((s, idx) => {
+                const tr = document.createElement('tr');
+                let posBadge = '';
+
+                if (idx === 0) {
+                    posBadge = '<span class="bg-amber-400 text-slate-900 w-6 h-6 rounded-full font-bold flex items-center justify-center text-xs mx-auto shadow-md shadow-amber-400/20"><i class="fa-solid fa-crown"></i></span>';
+                } else if (idx === 1) {
+                    posBadge = '<span class="bg-slate-300 text-slate-900 w-6 h-6 rounded-full font-bold flex items-center justify-center text-xs mx-auto shadow-md shadow-slate-300/20">2</span>';
+                } else if (idx === 2) {
+                    posBadge = '<span class="bg-amber-600 text-white w-6 h-6 rounded-full font-bold flex items-center justify-center text-xs mx-auto shadow-md shadow-amber-600/20">3</span>';
+                } else {
+                    posBadge = `<span class="text-slate-400 font-medium">${idx + 1}</span>`;
+                }
+
+                const bgRow = idx % 2 === 0 ? 'bg-slate-900/40' : 'bg-slate-950/20';
+
+                tr.className = `${bgRow} hover:bg-slate-800/40 transition duration-150`;
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-center font-bold">${posBadge}</td>
+                    <td class="py-3 px-4">
+                        <div class="flex items-center gap-3">
+                            ${generateTeamBadge(s.team, 'w-8 h-8')}
+                            <span class="font-bold text-slate-200 text-xs sm:text-sm truncate max-w-[150px] sm:max-w-none">${s.team.name}</span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3 text-center font-medium">${s.played}</td>
+                    <td class="py-3 px-2 text-center font-bold text-emerald-400">${s.won}</td>
+                    <td class="py-3 px-2 text-center font-bold text-amber-400">${s.drawn}</td>
+                    <td class="py-3 px-2 text-center font-bold text-rose-400">${s.lost}</td>
+                    <td class="py-3 px-2 text-center text-slate-400 hidden sm:table-cell">${s.goalsFor}</td>
+                    <td class="py-3 px-2 text-center text-slate-400 hidden sm:table-cell">${s.goalsAgainst}</td>
+                    <td class="py-3 px-3 text-center font-bold ${s.goalDifference > 0 ? 'text-emerald-400' : (s.goalDifference < 0 ? 'text-rose-500' : 'text-slate-400')}">
+                        ${s.goalDifference > 0 ? '+' : ''}${s.goalDifference}
+                    </td>
+                    <td class="py-3 px-4 text-center font-black bg-slate-800/60 text-emerald-400 border-l border-slate-800">${s.points}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // RENDER TAB 4: ADMIN PANEL
+        function renderAdmin() {
+            const adminMatchesList = document.getElementById('admin-matches-list');
+            if (!adminMatchesList) return;
+            adminMatchesList.innerHTML = '';
+
+            matches.forEach(m => {
+                const teamA = getTeam(m.teamAId);
+                const teamB = getTeam(m.teamBId);
+                const ref = getTeam(m.refId);
+
+                const item = document.createElement('div');
+                item.className = "p-4 bg-slate-900 border border-slate-800/80 rounded-2xl space-y-4 shadow-md hover:border-slate-700/65 transition duration-150";
+                
+                item.innerHTML = `
+                    <!-- Kepala Perlawanan -->
+                    <div class="flex flex-wrap justify-between items-center gap-2 text-xs border-b border-slate-850 pb-2.5">
+                        <span class="font-extrabold text-emerald-400 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Game #${m.id}
+                        </span>
+                        <div class="flex gap-3 text-slate-400 font-medium">
+                            <span><i class="fa-regular fa-clock text-emerald-500 mr-1"></i> ${m.time}</span>
+                            <span>•</span>
+                            <span>Pengadil: <strong class="text-amber-400 font-semibold">${ref.name}</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Grid Pasukan dan Kotak Input Jaringan -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center py-1">
+                        
+                        <!-- Pasukan A -->
+                        <div class="md:col-span-5 flex items-center gap-3 md:justify-end">
+                            ${generateTeamBadge(teamA, 'w-9 h-9')}
+                            <span class="text-xs sm:text-sm font-bold text-slate-100 md:text-right">${teamA.name}</span>
+                        </div>
+
+                        <!-- Kotak Input Skor Tengah -->
+                        <div class="md:col-span-2 flex justify-center items-center gap-2 bg-slate-850/80 py-2 px-4 rounded-xl border border-slate-700/50 max-w-[160px] mx-auto md:w-full">
+                            <input type="number" min="0" value="${m.scoreA !== null ? m.scoreA : ''}" id="scoreA-${m.id}" placeholder="-" class="w-11 h-9 bg-slate-900 border border-slate-700 rounded-lg text-center font-black text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                            <span class="text-slate-500 font-bold text-sm">:</span>
+                            <input type="number" min="0" value="${m.scoreB !== null ? m.scoreB : ''}" id="scoreB-${m.id}" placeholder="-" class="w-11 h-9 bg-slate-900 border border-slate-700 rounded-lg text-center font-black text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                        </div>
+
+                        <!-- Pasukan B -->
+                        <div class="md:col-span-5 flex items-center gap-3 md:justify-start">
+                            ${generateTeamBadge(teamB, 'w-9 h-9')}
+                            <span class="text-xs sm:text-sm font-bold text-slate-100">${teamB.name}</span>
+                        </div>
+                    </div>
+
+                    <!-- Butang Tindakan Simpan/Hapus -->
+                    <div class="flex justify-end gap-2 pt-2.5 border-t border-slate-850">
+                        ${m.isPlayed ? `
+                            <button onclick="clearMatchScore(${m.id})" class="text-xs bg-slate-850 hover:bg-slate-800 text-rose-400 px-3.5 py-2 rounded-xl transition border border-rose-950/20 flex items-center gap-1.5 font-medium">
+                                <i class="fa-solid fa-trash-can"></i> Padam
+                            </button>
+                        ` : ''}
+                        <button onclick="updateScore(${m.id})" class="text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-5 py-2 rounded-xl transition duration-150 flex items-center gap-1.5 shadow-lg shadow-emerald-500/10">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Skor
+                        </button>
+                    </div>
+                `;
+                adminMatchesList.appendChild(item);
+            });
+
+            // B. Senarai Pengurusan Pasukan & Logo
+            const adminTeamsList = document.getElementById('admin-teams-list');
+            if(!adminTeamsList) return;
+            adminTeamsList.innerHTML = '';
+
+            teams.forEach(t => {
+                const card = document.createElement('div');
+                card.className = "p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-3";
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        ${generateTeamBadge(t, 'w-10 h-10')}
+                        <div>
+                            <span class="text-xs text-emerald-400 font-bold block">Pasukan Kejohanan</span>
+                            <span class="text-sm font-bold text-white">${t.name}</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-2 border-t border-slate-850">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Pautan Logo Pasukan (Direct URL)</label>
+                            <input type="text" id="logo-${t.id}" value="${t.logo}" placeholder="https://contoh.com/logo-pasukan.png" class="w-full bg-slate-850 border border-slate-700/60 rounded-lg py-1.5 px-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <button onclick="updateTeamDetails('${t.id}')" class="w-full text-xs bg-slate-800 hover:bg-slate-750 text-emerald-400 border border-emerald-500/20 py-2 rounded-lg font-semibold transition">
+                            Kemas Kini Logo Pasukan
+                        </button>
+                    </div>
+                `;
+                adminTeamsList.appendChild(card);
+            });
+        }
+
+        // FUNGSI ADMIN: Kemas Kini Logo Kejohanan
+        window.updateTournamentLogo = function() {
+            const logoUrl = document.getElementById('input-tournament-logo').value;
+            tournamentLogo = logoUrl;
+            localStorage.setItem(STORAGE_KEY_TOURNEY_LOGO, logoUrl);
+            saveData();
+            showToast("Logo utama kejohanan berjaya dikemas kini!");
+        }
+
+        // FUNGSI ADMIN: Kemas Kini Skor Perlawanan
+        window.updateScore = function(matchId) {
+            const valA = document.getElementById(`scoreA-${matchId}`).value;
+            const valB = document.getElementById(`scoreB-${matchId}`).value;
+
+            if (valA === "" || valB === "") {
+                showToast("Sila isi kedua-dua kotak jaringan!");
+                return;
+            }
+
+            const parsedA = parseInt(valA, 10);
+            const parsedB = parseInt(valB, 10);
+
+            if (isNaN(parsedA) || isNaN(parsedB) || parsedA < 0 || parsedB < 0) {
+                showToast("Masukkan nilai gol yang sah (0 ke atas)!");
+                return;
+            }
+
+            const matchIndex = matches.findIndex(m => m.id === matchId);
+            if (matchIndex !== -1) {
+                matches[matchIndex].scoreA = parsedA;
+                matches[matchIndex].scoreB = parsedB;
+                matches[matchIndex].isPlayed = true;
+
+                saveData();
+                showToast(`Skor pertandingan Game #${matchId} dikemas kini.`);
+            }
+        }
+
+        // FUNGSI ADMIN: Padam Skor Perlawanan
+        window.clearMatchScore = function(matchId) {
+            const matchIndex = matches.findIndex(m => m.id === matchId);
+            if (matchIndex !== -1) {
+                matches[matchIndex].scoreA = null;
+                matches[matchIndex].scoreB = null;
+                matches[matchIndex].isPlayed = false;
+
+                saveData();
+                showToast(`Skor Game #${matchId} telah dipadam.`);
+            }
+        }
+
+        // FUNGSI ADMIN: Kemas Kini Logo Pasukan
+        window.updateTeamDetails = function(teamId) {
+            const logoUrl = document.getElementById('logo-' + teamId).value;
+            const teamIndex = teams.findIndex(t => t.id === teamId);
+
+            if (teamIndex !== -1) {
+                teams[teamIndex].logo = logoUrl;
+                saveData();
+                showToast(`Logo pasukan ${teams[teamIndex].name} berjaya dikemas kini!`);
+            }
+        }
+
+        // FUNGSI ADMIN: Pengesahan Set Semula Semua Skor
+        window.openResetConfirmation = function() {
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        window.closeResetConfirmation = function() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+        }
+
+        window.resetScores = function() {
+            matches = JSON.parse(JSON.stringify(defaultMatches));
+            saveData();
+            closeResetConfirmation();
+            showToast("Semua keputusan perlawanan telah ditetapkan semula.");
+        }
+
+        // Fungsi pusat untuk menyegarkan paparan
+        function renderAll() {
+            renderTournamentLogo();
+            renderMatches();
+            renderResults();
+            renderStandings();
+            renderAdmin();
+        }
+
+        // Eksekusi pemuatan halaman awal
+        window.onload = function() {
+            setupSyncEngine();
+        };
+    </script>
+</body>
+</html>
